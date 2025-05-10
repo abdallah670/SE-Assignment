@@ -43,6 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthenticateService.cs" />
+    <Compile Include="Budget.cs" />
+    <Compile Include="Expense.cs" />
+    <Compile Include="Goal.cs" />
+    <Compile Include="Income.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="virtualUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
