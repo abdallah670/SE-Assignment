@@ -32,7 +32,7 @@ namespace Personal_Bugeting
         public User(string email, string password)
         {
             Email = email;
-            PasswordHash =HashPassword(password);
+            PasswordHash = _authService.HashPassword(password);
         }
         public bool authenticate()
         {
@@ -66,20 +66,11 @@ namespace Personal_Bugeting
         {
             if (string.IsNullOrEmpty(newPassword))
                 throw new ArgumentException("Password cannot be empty.");
-            this.PasswordHash =HashPassword(newPassword);
+            this.PasswordHash = _authService.HashPassword(newPassword);
 
             _userRepository.Update(this);
         }
-        private string HashPassword(string password)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-             
-                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-              
-                return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-            }
-        }
+      
     }
     public  interface IUserRepository
     {
