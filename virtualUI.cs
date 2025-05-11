@@ -195,28 +195,81 @@ namespace Personal_Bugeting
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the Personal Budgeting Application!");
-            Console.WriteLine("Please choose an option:");
-            Console.WriteLine("1. Sign Up");
-            Console.WriteLine("2. Login");
+            Console.WriteLine("1. Sign Up(First User Story)");
+            Console.WriteLine("2. Login(Second User Story)");
             Console.WriteLine("3. Exit");
-            string choice = "2";
+            Console.Write("Please choose an option:");
+            string choice = Console.ReadLine();
             if (choice == "1")
             {
                 FirstUserStory();
+                string ans = "n";
+                do
+                {
+                    Console.WriteLine("1.  Third User Story (Tracking Income)");
+                    Console.WriteLine("2.  Fourth User Story (Tracking Budgeting)");
+                    Console.WriteLine("3.  Fifth User Story (Reminder)");
+                    Console.WriteLine("4.  Seventh User Story (Tracking Expense)");
+                    Console.Write("Which User Story To test?");
+                    choice= Console.ReadLine();
+                    switch (choice)
+                    {
+                        case "1":
+                            ThirdUserStory();
+                            break;
+                        case "2":
+                            FourthUserStory();
+                            break;
+                        case "3":
+                            FifthUserStory();
+                            break;
+                        case "4":
+                            SeventhUserStory();
+                            break;
+
+                    }
+                    Console.Write("Want to test another user story?y/n");
+                    ans=Console.ReadLine();
+                } while (ans == "y" || ans == "Y");
+
 
             }
             else if (choice == "2")
             {
                 SecondUserStory();
+                string ans = "n";
+                do
+                {
+                    Console.WriteLine("1.  Third User Story (Tracking Income)");
+                    Console.WriteLine("2.  Fourth User Story (Tracking Budgeting)");
+                    Console.WriteLine("3.  Fifth User Story (Reminder)");
+                    Console.WriteLine("4.  Seventh User Story (Tracking Expense)");
+                    Console.Write("Which User Story To test?");
+                    choice = Console.ReadLine();
+                    switch (choice)
+                    {
+                        case "1":
+                            ThirdUserStory();
+                            break;
+                        case "2":
+                            FourthUserStory();
+                            break;
+                        case "3":
+                            FifthUserStory();
+                            break;
+                        case "4":
+                            SeventhUserStory();
+                            break;
+
+                    }
+                    Console.Write("Want to test another user story?y/n? ");
+                    ans = Console.ReadLine();
+                } while (ans == "y" || ans == "Y");
             }
             else if (choice == "3")
             {
                 Environment.Exit(0);
             }
-            ThirdUserStory();
-            FourthUserStory();
-            FifthUserStory();
-            SeventhUserStory();
 
 
         }
