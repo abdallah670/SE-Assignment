@@ -3,28 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Personal_Bugeting
 {
-    internal class Budget
+    [Serializable]
+    public class Budget
     {
-        public int Id { get; set; }
-        public string category { get; set; }
-        public decimal spent { get; set; }
-        public decimal limit { get; set; }
-        public DateTime periodStart { get; set; }
-        public DateTime periodEnd { get; set; }
-        public double getprogress()
+       public BudgetDTO _budgetDTO {  get; set; }
+       public UserDTO User { get; set; }
+        public decimal getprogress()
         {
-            if (limit == 0)
+            if ( _budgetDTO.spent== 0)
             {
                 return 0;
             }
-            return (double)(spent / limit) * 100;
+            return (decimal)(_budgetDTO.spent / _budgetDTO.limit) * 100;
         }
         public bool isExceeded()
         {
-            return spent > limit;
+            return _budgetDTO.spent > _budgetDTO.limit;
         }
     }
 }

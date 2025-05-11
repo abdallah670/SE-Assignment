@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 
 namespace Personal_Bugeting
 {
-    internal class Expense
+    [Serializable]
+    public class Expense
     {
-        int Id { get; set; }
-        decimal amount { get; set; }
-        DateTime date { get; set; }
-        bool isRecurring { get; set; }
+        public ExpenseDTO expense { get; set; }
+
         public void MarknonRecurring()
         {
-            isRecurring = false;
+            expense.isRecurring = false;
         }
     }
 }

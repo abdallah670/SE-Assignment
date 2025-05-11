@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,148 +10,214 @@ namespace Personal_Bugeting
 {
     internal class virtualUI
     {
-        static void Main(string[] args)
+        //This class is used to create a virtual UI for the application
+        private static BudgetService _budgetService = new BudgetService();
+        private static IncomeService _incomeService = new IncomeService();
+        private static ExpenseService _expenseService = new ExpenseService();
+        private static ReminderService _reminderService = new ReminderService();
+        private static User _userService;
+        private static AuthenticateService _authenticateService = new AuthenticateService();
+        private static UserDTO userDTO = new UserDTO();
+        private static ReminderReopsitoryImpl _reminderReopsitoryImpl = new ReminderReopsitoryImpl();
+        private static UserRepositoryImpl _userRepositoryImpl = new UserRepositoryImpl();
+        private static void FirstUserStory()//Sign up
         {
-         
-            AuthenticateService authService = new AuthenticateService();
-            Console.WriteLine("Welcome to Personal Budgeting App!");
-            Console.WriteLine("Please log in to continue.");
-            Console.WriteLine("Enter your email: ");
-            string email = Console.ReadLine();
-            Console.WriteLine("Enter your password: ");
-            string password = Console.ReadLine();
-            User user=authService.login(email, password);
-            if (user != null)
+            Console.WriteLine("Sign up page");
+            int Id = -1;
+            while (Id < 0)
             {
-                Console.WriteLine("Login successful!");
-                Console.WriteLine($"Welcome, {user.Name}!");
-                // Proceed with the application logic
-                //Goal test
-                //Console.WriteLine("Please enter the goal name: ");
-                //string goalName = Console.ReadLine();
-                //// Validate goal name
-                //while (string.IsNullOrWhiteSpace(goalName))
-                //{
-                //    Console.WriteLine("Invalid input. Goal name cannot be empty. Please enter a valid goal name: ");
-                //    goalName = Console.ReadLine();
-                //}
-
-                //decimal targetAmount;
-                //Console.WriteLine("Please enter the target amount: ");
-                //while (!decimal.TryParse(Console.ReadLine(), out targetAmount))
-                //{
-                //    Console.WriteLine("Invalid input. Please enter a valid target amount: ");
-                //}
-
-                //DateTime targetDate;
-                //Console.WriteLine("Please enter the target date (yyyy-mm-dd): ");
-                //while (!DateTime.TryParse(Console.ReadLine(), out targetDate))
-                //{
-                //    Console.WriteLine("Invalid input. Please enter a valid target date (yyyy-mm-dd): ");
-                //}
-
-                //Console.WriteLine(
-                //    $"Goal Name: {goalName}, Target Amount: {targetAmount}, Target Date: {targetDate.ToShortDateString()}");
-
-                //Goal goal = new Goal
-                //{
-                //    Name = goalName,
-                //    targetAmount = targetAmount,
-                //    targetDate = targetDate,
-                //    currentAmount = 0
-                //};
-                //Dictionary<DateTime, decimal> timeline = goal.CalculateTimeLine();
-                //Console.WriteLine("Timeline for your goal:");
-                //foreach (var entry in timeline)
-                //{
-                //    Console.WriteLine($"Date: {entry.Key.ToShortDateString()}, Amount: {entry.Value}");
-                //}
-
-                //Console.WriteLine(
-                //    "Please enter the amount to add to your goal: ");
-                //decimal amountToAdd;
-                //while (!decimal.TryParse(Console.ReadLine(), out amountToAdd))
-                //{
-                //    Console.WriteLine("Invalid input. Please enter a valid amount: ");
-                //}
-                //goal.AddToGoal(amountToAdd);
-                //Console.WriteLine(
-                //    $"Amount added to goal. Current amount: {goal.currentAmount}");
-                // timeline = goal.CalculateTimeLine();
-                //Console.WriteLine("Timeline for your goal:");
-                //foreach (var entry in timeline)
-                //{
-                //    Console.WriteLine($"Date: {entry.Key.ToShortDateString()}, Amount: {entry.Value}");
-                //}
-                //budget class test
+                Console.WriteLine("Please enter your name:");
+                string name = Console.ReadLine();
                 Console.WriteLine(
-                    "Please enter the budget name: ");
-                string budgetName = Console.ReadLine();
-                // Validate budget name 
-                while (string.IsNullOrWhiteSpace(budgetName))
-                {
-                    Console.WriteLine("Invalid input. Budget name cannot be empty. Please enter a valid budget name: ");
-                    budgetName = Console.ReadLine();
-                }
-                decimal budgetLimit;
-                Console.WriteLine("Please enter the budget limit: ");
-                while (!decimal.TryParse(Console.ReadLine(), out budgetLimit))
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid budget limit: ");
-                }
-                DateTime periodStart;
-                Console.WriteLine("Please enter the budget period start date (yyyy-mm-dd): ");
-                while (!DateTime.TryParse(Console.ReadLine(), out periodStart))
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid budget period start date (yyyy-mm-dd): ");
-                }
-                DateTime periodEnd;
+                    "Please enter your email address:");
+                string email = Console.ReadLine();
+                Console.WriteLine("Please enter your password:");
+                string password = Console.ReadLine();
                 Console.WriteLine(
-                    "Please enter the budget period end date (yyyy-mm-dd): ");
-                while (!DateTime.TryParse(Console.ReadLine(), out periodEnd))
+                    "Please confirm your password:");
+                string confirmPassword = Console.ReadLine();
+
+                if (password != confirmPassword)
                 {
-                    Console.WriteLine("Invalid input. Please enter a valid budget period end date (yyyy-mm-dd): ");
+                    Console.WriteLine("Passwords do not match. Please try again.");
+                    return;
                 }
-                Console.WriteLine(
-                    $"Budget Name: {budgetName}, Budget Limit: {budgetLimit}, Period Start: {periodStart.ToShortDateString()}, Period End: {periodEnd.ToShortDateString()}");
-                Budget budget = new Budget
+                _authenticateService.register(name, email, password, ref Id);
+                if (Id > -1)
                 {
-                    category = budgetName,
-                    limit = budgetLimit,
-                    periodStart = periodStart,
-                    periodEnd = periodEnd,
-                    spent = 0
-                };
-                Console.WriteLine("Please enter the amount spent: ");
-                decimal amountSpent;
-                Console.WriteLine(
-                    "Please enter the amount spent: ");
-                while (!decimal.TryParse(Console.ReadLine(), out amountSpent))
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid amount: ");
-                }
-                Console.WriteLine(
-                    $"Amount spent: {amountSpent}");
-                budget.spent += amountSpent;
-                if (budget.isExceeded())
-                {
-                    Console.WriteLine("Budget exceeded!");
-                    budget.spent =budgetLimit;
+
+                    userDTO.Name = name;
+                    userDTO.Email = email;
+                    userDTO.PasswordHash = password;
+                    userDTO.Id = Id;
+                    _userService = new User(userDTO);
+                    if (_userService.authenticate())
+                    {
+                        Console.WriteLine("User registered successfully.");
+                        break;
+                    }
+
                 }
                 else
                 {
-                    Console.WriteLine("Budget not exceeded.");
-
-
+                    Console.WriteLine("Try again.");
                 }
-                Console.WriteLine(
-                    $"Budget Name: {budget.category}, Budget Limit: {budget.limit}, Amount Spent: {budget.spent}, Period Start: {budget.periodStart.ToShortDateString()}, Period End: {budget.periodEnd.ToShortDateString()}");
-                Console.WriteLine($"Budget Progress: {budget.getprogress()}%");
+
+            }
+        }
+        private static void SecondUserStory()//Log In
+        {
+            Console.WriteLine("Log in Page");
+            Console.WriteLine("Please enter your email address:");
+            string email = Console.ReadLine();
+            Console.WriteLine("Please enter your password:");
+            string password = Console.ReadLine();
+            _userService = new User(email, password);
+            if (_userService.authenticate())
+            {
+                userDTO = _userService.user;
+                Console.WriteLine("User Logged in successfully.");
             }
             else
             {
-                Console.WriteLine("Invalid email or password. Please try again.");
+                return;
             }
+        }
+        //Track all Incomes
+        private static void PrintncomeList(List<IncomeDTO> incomeList)
+        {
+            Console.WriteLine("All Incomes:");
+            foreach (var income in incomeList)
+            {
+                Console.WriteLine($"Source: {income.Source}, Amount: {income.amount}, Date: {income.date}");
+            }
+        }
+        private static void ThirdUserStory()//Track Income
+        {
+            //User can track income
+            Console.WriteLine("Income Tracking Page");
+            IncomeDTO incomeDTO = new IncomeDTO();
+            incomeDTO.amount = 1000;
+            incomeDTO.date = DateTime.Now;
+            incomeDTO.isRecurring = true;
+            incomeDTO.Source = "Salary";
+            incomeDTO.User = userDTO;
+            _incomeService.AddIncome(incomeDTO);
+            Console.WriteLine($"Income details");
+            Console.WriteLine($"Income Source: {incomeDTO.Source}, Amount:{incomeDTO.amount}");
+            //another income
+            incomeDTO.amount += 1000;
+            incomeDTO.date = DateTime.Now;
+            incomeDTO.isRecurring = false;
+            incomeDTO.Source = "Bonus";
+            incomeDTO.User = userDTO;
+            _incomeService.AddIncome(incomeDTO);
+            Console.WriteLine($"Income details");
+            Console.WriteLine($"Income Source: {incomeDTO.Source}, Amount:{incomeDTO.amount}");
+            if (incomeDTO.Id > 1)
+            {
+                Console.WriteLine("Do you want to Show all incomes?y/n");
+                string Answer = Console.ReadLine();
+                if (Answer == "y")
+                {
+                    List<IncomeDTO> incomeList = _incomeService.GetIncomes();
+                    PrintncomeList(incomeList);
+                }
+            }
+        }
+        //4 User Story Budget
+        private static void FourthUserStory() //Tracking Budgeting
+        {
+            Console.WriteLine("Bugeting Page");
+            BudgetDTO budgetDTO = new BudgetDTO();
+            budgetDTO.category = "income";
+            budgetDTO.periodStart = DateTime.Now;
+            budgetDTO.periodEnd = DateTime.Now.AddDays(2);
+            budgetDTO.limit = 1000;
+            budgetDTO.spent = 500;
+            budgetDTO.User = userDTO;
+            _budgetService.AddBudget(budgetDTO);
+            Console.WriteLine("Budget detalis");
+            Console.WriteLine($"Category: {budgetDTO.category}, StartPeriod: {budgetDTO.periodStart}, EndPeriod: {budgetDTO.periodEnd}");
+            Console.WriteLine("Progress: " + _budgetService.CalculateProgress() + "%");
+        }
+        //5 User Story Reminder
+        //Print Notifications
+        private static void PrintNoti()
+        {
+
+            List<ReminderDTO> reminderList = _reminderReopsitoryImpl.FindByUser(userDTO.Id);
+            Console.WriteLine("Notifications");
+            foreach(var i in reminderList) {
+
+                Console.WriteLine($"Message: {i.Message}, Date: {i.Date}");
+            }
+        }
+
+        private static void FifthUserStory()//Reminder
+        {
+            Console.WriteLine("Reminder Page");
+            ReminderDTO reminderDTO = new ReminderDTO();
+            reminderDTO.Message = "Pay your bills";
+            reminderDTO.Date = DateTime.Now.AddDays(7);
+            reminderDTO.User = userDTO;
+            _reminderService.ScheduleReminder(reminderDTO);
+            Console.WriteLine("Suppose The remider day is today");
+            _reminderService.Notify(userDTO.Id, "you should pay your bell now");
+            PrintNoti();
+
+        }
+        //Senventh UserStory
+        private static void SeventhUserStory()//Expense Tracking
+        {
+            Console.WriteLine("Expense Page");
+            ExpenseDTO expenseDTO = new ExpenseDTO();
+            expenseDTO.amount = 100;
+            expenseDTO.date = DateTime.Now;
+            expenseDTO.isRecurring = true;
+            expenseDTO.User = userDTO;
+            _expenseService.AddExpense(expenseDTO);
+            Console.WriteLine(
+                $"Expense details");
+            Console.WriteLine(expenseDTO.amount + " " + expenseDTO.category + " " + expenseDTO.date + " " + expenseDTO.isRecurring);
+            //another Expense
+            expenseDTO.amount += 100;
+            expenseDTO.date = DateTime.Now;
+            expenseDTO.isRecurring = false;
+            expenseDTO.User = userDTO;
+            _expenseService.AddExpense(expenseDTO);
+            Console.WriteLine(
+                $"Expense details");
+            Console.WriteLine(expenseDTO.amount + " " + expenseDTO.date);
+
+        }
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Welcome to the Personal Budgeting Application!");
+            Console.WriteLine("Please choose an option:");
+            Console.WriteLine("1. Sign Up");
+            Console.WriteLine("2. Login");
+            Console.WriteLine("3. Exit");
+            string choice = "2";
+            if (choice == "1")
+            {
+                FirstUserStory();
+
+            }
+            else if (choice == "2")
+            {
+                SecondUserStory();
+            }
+            else if (choice == "3")
+            {
+                Environment.Exit(0);
+            }
+            ThirdUserStory();
+            FourthUserStory();
+            FifthUserStory();
+            SeventhUserStory();
+
 
         }
     }

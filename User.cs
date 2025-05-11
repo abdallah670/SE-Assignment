@@ -11,40 +11,37 @@ namespace Personal_Bugeting
 {
     public class User
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; private set; }
+        public UserDTO user;
         private readonly IUserRepository _userRepository;
         private readonly AuthenticateService _authService;
+
         public User(IUserRepository userRepository, AuthenticateService authService)
         {
             _userRepository = userRepository;
             _authService = authService;
         }
-        public User(string name, string email, string passwordHash, int id)
+        public User(UserDTO user)
         {
-            Name = name;
-            Email = email;
-            PasswordHash = passwordHash;
-            Id = id;
+            this.user = user ?? new UserDTO(); // Initialize if null
+            _authService = new AuthenticateService();
         }
         public User(string email, string password)
         {
-            Email = email;
-            PasswordHash = _authService.HashPassword(password);
+            this.user = new UserDTO(); // Initialize the user field
+            user.Email = email;
+            user.PasswordHash = password;
+            _authService = new AuthenticateService();
         }
         public bool authenticate()
         {
         
-            User authenticatedUser = _authService.login(Email, PasswordHash);
+            User authenticatedUser = _authService.login(user.Email,user.PasswordHash);
             if (authenticatedUser != null)
             {
-                Console.WriteLine("User authenticated successfully.");
-                this.Id = authenticatedUser.Id;
-                this.Name = authenticatedUser.Name;
-                this.Email = authenticatedUser.Email;
-                this.PasswordHash = authenticatedUser.PasswordHash;
+                user.Id = authenticatedUser.user.Id;
+                user.Name = authenticatedUser.user.Name;
+                user.Email = authenticatedUser.user.Email;
+                user.PasswordHash = user.PasswordHash;
                 return true;
             }
             else
@@ -64,17 +61,12 @@ namespace Personal_Bugeting
 
         public void resetPassword(string newPassword)
         {
-            if (string.IsNullOrEmpty(newPassword))
-                throw new ArgumentException("Password cannot be empty.");
-            this.PasswordHash = _authService.HashPassword(newPassword);
-
-            _userRepository.Update(this);
+           
+            user.PasswordHash = _authService.HashPassword(newPassword);
+            _userRepository.Save(user);
+            Console.WriteLine("Password reset successfully.");
         }
       
     }
-    public  interface IUserRepository
-    {
-        void Save(User user);
-        void Update(User user);
-    }
+    
 }
