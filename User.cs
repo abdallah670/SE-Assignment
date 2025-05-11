@@ -50,22 +50,6 @@ namespace Personal_Bugeting
                 return false;
             }
         }
-
-        public void logout()
-        {
-            // Logic to log out the user
-            // This could involve clearing session data, tokens, etc.
-            Console.WriteLine("User logged out successfully.");
-            Environment.Exit(0);
-        }
-
-        public void resetPassword(string newPassword)
-        {
-           
-            user.PasswordHash = _authService.HashPassword(newPassword);
-            _userRepository.Save(user);
-            Console.WriteLine("Password reset successfully.");
-        }
       
     }
     

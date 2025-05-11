@@ -46,14 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Budget.cs" />
-    <Compile Include="BudgetService.cs" />
     <Compile Include="data_models.cs" />
     <Compile Include="Expense.cs" />
     <Compile Include="Goal.cs" />
     <Compile Include="Income.cs" />
     <Compile Include="interfaces.cs" />
-    <Compile Include="predictions.cs" />
-    <Compile Include="report.cs" />
     <Compile Include="Repositories.cs" />
     <Compile Include="Services.cs" />
     <Compile Include="User.cs" />
