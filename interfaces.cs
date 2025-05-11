@@ -6,6 +6,12 @@ namespace Personal_Bugeting{
         void AddIncome(IncomeDTO income);
         List<IncomeDTO> GetIncomes();
     }
+    public interface IReminderService
+    {
+        void ScheduleReminder(ReminderDTO reminder);
+        void Notify(int userId, string Message);
+
+    }
     public interface IExpenseService
     {
         void AddExpense(ExpenseDTO expense);
@@ -38,11 +44,7 @@ namespace Personal_Bugeting{
         void Save(ExpenseDTO expense);
         List<ExpenseDTO> FindByUser(int userId);
     }
-   public interface IReminderService {
-        void ScheduleReminder(ReminderDTO reminder);
-        void Notify(int userId,string Message);
-
-    }
+ 
     public interface IReminderRepository {
         void Save(ReminderDTO reminder);
         List<ReminderDTO> FindByUser(int userId);
